@@ -67,7 +67,7 @@
     </#list>
   </#if>
           <el-col :span="6">
-            <queryOperation :crud="crud" />
+            <TableQueryOperation :crud="crud" />
             <el-button v-if="crud.showExtendSearch" type="text" @click="crud.toggleExtendSearch">
               折叠
               <i class="el-icon-arrow-up el-icon--right" />
@@ -80,9 +80,9 @@
         </el-row>
       </div>
   <#if table.enablePermission>
-      <crudOperation :permission="permission" />
+      <TableOperation :permission="permission" />
   <#else>
-      <crudOperation />
+      <TableOperation />
   </#if>
 </#if>
     </div>
@@ -113,13 +113,13 @@
   <#if table.enablePermission>
       <el-table-column v-if="checkPer(['admin','<#if package.ModuleName??>${package.ModuleName}</#if>:${table.entityPath}:edit','<#if package.ModuleName??>${package.ModuleName}</#if>:${table.entityPath}:del'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
-          <udOperation :data="scope.row" :permission="permission" />
+          <TableColumnOperation :data="scope.row" :permission="permission" />
         </template>
       </el-table-column>
   <#else>
       <el-table-column label="操作" width="150px" align="center">
         <template slot-scope="scope">
-          <udOperation :data="scope.row" />
+          <TableColumnOperation :data="scope.row" />
         </template>
       </el-table-column>
   </#if>
@@ -127,7 +127,7 @@
 </#if>
 
     <!--分页组件-->
-    <pagination />
+    <Pagination />
 
     <#if table.enableForm>
     <!--表单组件-->
@@ -140,15 +140,15 @@
 import ${table.apiName} from './${table.apiName}'
 import ${table.formName} from './${table.formName}'
 import CRUD, {crud, header, presenter} from '@crud/crud'
-import queryOperation from '@crud/Query.operation'
-import crudOperation from '@crud/CRUD.operation'
-import udOperation from '@crud/UD.operation'
-import pagination from '@crud/Pagination'
+import TableOperation from '@crud/TableOperation'
+import TableColumnOperation from '@crud/TableColumnOperation'
+import TableQueryOperation from '@crud/TableQueryOperation'
+import Pagination from '@crud/Pagination'
 import DateRangePicker from '@/components/DateRangePicker'
 
 export default {
   name: '${table.listName}',
-  components: { pagination, crudOperation, queryOperation, udOperation, DateRangePicker, ${table.formName} },
+  components: { Pagination, TableOperation, TableQueryOperation, TableColumnOperation, DateRangePicker, ${table.formName} },
   mixins: [presenter(), header(), crud()],
   cruds() {
     return CRUD({

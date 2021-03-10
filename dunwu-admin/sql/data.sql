@@ -396,27 +396,24 @@ COMMIT;
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_log`;
 CREATE TABLE `sys_log` (
-    `id`               BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-    `description`      VARCHAR(255) DEFAULT NULL,
-    `log_type`         VARCHAR(255) DEFAULT NULL,
-    `method`           VARCHAR(255) DEFAULT NULL,
-    `params`           TEXT         DEFAULT NULL,
-    `request_ip`       VARCHAR(255) DEFAULT NULL,
-    `time`             BIGINT(20)   DEFAULT NULL,
-    `username`         VARCHAR(255) DEFAULT NULL,
-    `address`          VARCHAR(255) DEFAULT NULL,
-    `browser`          VARCHAR(255) DEFAULT NULL,
-    `exception_detail` TEXT         DEFAULT NULL,
-    `create_time`      DATETIME     DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    PRIMARY KEY (`id`) USING BTREE,
-    KEY `log_create_time_index`(`create_time`),
-    KEY `key_log_type`(`log_type`)
+    `id`               BIGINT(20)   NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `description`      VARCHAR(255) NULL     DEFAULT NULL COMMENT '日志描述信息',
+    `level`            VARCHAR(10)  NULL     DEFAULT NULL COMMENT '日志级别',
+    `exception`        TEXT         NULL     DEFAULT NULL COMMENT '异常信息，只有日志级别为ERROR时才有值',
+    `method`           VARCHAR(255) NULL     DEFAULT NULL COMMENT '被调用方法的名称',
+    `params`           TEXT         NULL     DEFAULT NULL COMMENT '被调用方法的参数',
+    `username`         VARCHAR(255) NULL     DEFAULT NULL COMMENT '用户名',
+    `request_ip`       VARCHAR(255) NULL     DEFAULT NULL COMMENT 'HTTP请求的IP地址',
+    `request_location` VARCHAR(255) NULL     DEFAULT NULL COMMENT 'HTTP请求的地理地址',
+    `request_browser`  VARCHAR(255) NULL     DEFAULT NULL COMMENT 'HTTP请求的浏览器',
+    `request_time`     BIGINT(20)   NULL     DEFAULT NULL COMMENT 'HTTP请求的耗时',
+    `create_time`      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '日志记录时间',
+    PRIMARY KEY (`id`) USING BTREE
 )
     ENGINE = InnoDB
-    AUTO_INCREMENT = 3537
     DEFAULT CHARSET = `utf8`
     ROW_FORMAT = COMPACT
-    COMMENT ='系统日志';
+    COMMENT = '系统日志记录';
 
 -- ----------------------------
 -- Table structure for sys_menu

@@ -1,8 +1,8 @@
 package io.github.dunwu.modules.monitor.aspect;
 
 import io.github.dunwu.modules.monitor.annotation.AppLog;
-import io.github.dunwu.modules.monitor.entity.LogRecord;
-import io.github.dunwu.modules.monitor.service.LogService;
+import io.github.dunwu.modules.monitor.entity.SysLog;
+import io.github.dunwu.modules.monitor.service.SysLogService;
 import io.github.dunwu.util.RequestHolder;
 import io.github.dunwu.util.SecurityUtils;
 import io.github.dunwu.util.ThrowableUtil;
@@ -29,10 +29,10 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class LogAspect {
 
-    private final LogService logService;
+    private final SysLogService logService;
     private final ThreadLocal<Long> currentTime = new ThreadLocal<>();
 
-    public LogAspect(LogService logService) {
+    public LogAspect(SysLogService logService) {
         this.logService = logService;
     }
 
@@ -52,7 +52,7 @@ public class LogAspect {
         Object result;
         currentTime.set(System.currentTimeMillis());
         result = joinPoint.proceed();
-        LogRecord log = new LogRecord("INFO", System.currentTimeMillis() - currentTime.get());
+        SysLog log = new SysLog("INFO", System.currentTimeMillis() - currentTime.get());
         currentTime.remove();
         HttpServletRequest request = RequestHolder.getHttpServletRequest();
         ServletUtil.RequestIdentityInfo requestIdentityInfo = ServletUtil.getRequestIdentityInfo(request);
@@ -69,9 +69,9 @@ public class LogAspect {
      */
     @AfterThrowing(pointcut = "pointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
-        LogRecord log = new LogRecord("ERROR", System.currentTimeMillis() - currentTime.get());
+        SysLog log = new SysLog("ERROR", System.currentTimeMillis() - currentTime.get());
         currentTime.remove();
-        log.setExceptionDetail(ThrowableUtil.getStackTrace(e).getBytes());
+        log.setDescription(ThrowableUtil.getStackTrace(e));
         HttpServletRequest request = RequestHolder.getHttpServletRequest();
         ServletUtil.RequestIdentityInfo requestIdentityInfo = ServletUtil.getRequestIdentityInfo(request);
         logService.save(SecurityUtils.getCurrentUsername(), requestIdentityInfo.getBrowser(),
